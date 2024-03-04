@@ -1,2 +1,2 @@
-# TakeawayScraper
- scrape takeaway.be
+# UberEatsScraper
+Scrape Uber Eats

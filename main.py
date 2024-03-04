@@ -29,17 +29,3 @@ for shop in shops:
         restaurant_name = name.text
         page_link = "https://www.ubereats.com" + link['href']
         print(restaurant_name, page_link)
-
-        try:
-            response = requests.get(page_link, headers=headers, timeout=10)
-            response.raise_for_status() 
-        except requests.exceptions.RequestException as e:
-            print("An error occurred:", e)
-            exit(1)
-
-        soup = BeautifulSoup(response.content, "html.parser")
-        products = soup.find_all('div', class_=["kh", "ki", "pm", "bl"])
-        for product in products:
-            names = soup.find_all('span')
-            for name in names:
-                print(name.text)

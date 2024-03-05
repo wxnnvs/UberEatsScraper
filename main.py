@@ -7,16 +7,17 @@ headers = {
 }
 #proxy = FreeProxy(rand=True, timeout=1).get()
 
+countries = ["au", "be", "ca", "cl", "cr", "do", "ec", "sv", "fr", "de", "gt", "ie", "it", "jp", "ke", "mx", "nl", "nz", "pa", "pl", "pt", "za", "es", "lk", "se", "ch", "tw", "gb", "us"]
 cities = ["antwerpen-anvers", "brussel-bruxelles-capitale", "gent-flandre-orientale", "li%C3%A8ge-li%C3%A8ge", "louvain-la-neuve-brabant-wallon", "namur-namur"]
 
 for city in cities:
     if city == "li%C3%A8ge-li%C3%A8ge":
-        print("\n\nLIÈGE\n")
+        print("Scraping LIÈGE...\n")
         with open("restaurants.txt", "a", encoding="utf-8") as file:
             file.write("\n\nLIÈGE\n")
             file.close()
     else:
-        print(f"\n\n{city.upper()}\n")
+        print(f"Scraping {city.upper()}...\n")
         with open("restaurants.txt", "a", encoding="utf-8") as file:
             file.write(f"\n\n{city.upper()}\n")
             file.close()

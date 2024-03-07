@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from fp.fp import FreeProxy
+import os
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
@@ -10,6 +11,9 @@ headers = {
 countries = ["au", "be", "ca", "cl", "cr", "do", "ec", "sv", "fr", "de", "gt", "ie", "jp", "ke", "mx", "nl", "nz", "pa", "pl", "pt", "za", "es", "lk", "se", "ch", "tw", "gb"]
 
 for country in countries:
+    # Check if the 'countries' folder exists, create it if it doesn't
+    if not os.path.exists('countries'):
+        os.makedirs('countries')
     with open(f"countries/{country}.txt", "w", encoding="utf-8") as file:
         file.write(f"{country.upper()}\n\nCities:\n")
 

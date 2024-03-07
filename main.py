@@ -7,21 +7,14 @@ headers = {
 }
 #proxy = FreeProxy(rand=True, timeout=1).get()
 
-countries = ["au", "be", "ca", "cl", "cr", "do", "ec", "sv", "fr", "de", "gt", "ie", "it", "jp", "ke", "mx", "nl", "nz", "pa", "pl", "pt", "za", "es", "lk", "se", "ch", "tw", "gb", "us"]
-cities = ["antwerpen-anvers", "brussel-bruxelles-capitale", "gent-flandre-orientale", "li%C3%A8ge-li%C3%A8ge", "louvain-la-neuve-brabant-wallon", "namur-namur"]
+countries = ["au", "be", "ca", "cl", "cr", "do", "ec", "sv", "fr", "de", "gt", "ie", "jp", "ke", "mx", "nl", "nz", "pa", "pl", "pt", "za", "es", "lk", "se", "ch", "tw", "gb"]
 
-for city in cities:
-    if city == "li%C3%A8ge-li%C3%A8ge":
-        print("Scraping LIÈGE...\n")
-        with open("restaurants.txt", "a", encoding="utf-8") as file:
-            file.write("\n\nLIÈGE\n")
-            file.close()
-    else:
-        print(f"Scraping {city.upper()}...\n")
-        with open("restaurants.txt", "a", encoding="utf-8") as file:
-            file.write(f"\n\n{city.upper()}\n")
-            file.close()
-    url = f"https://www.ubereats.com/be/city/{city}"
+for country in countries:
+    with open(f"countries/{country}.txt", "w", encoding="utf-8") as file:
+        file.write(f"{country.upper()}\n\nCities:\n")
+
+    url = f"https://www.ubereats.com/{country}/location"
+    print(f"Scraping {country.upper()}...\n")
 
     try:
         response = requests.get(url, headers=headers, timeout=10)
@@ -32,14 +25,24 @@ for city in cities:
 
     soup = BeautifulSoup(response.content, "html.parser")
 
-    shops = soup.find_all('a', {"data-test": "store-link"})
+    links = soup.find_all('a')
+    for link in links:
+        href = link.get('href')  # Get href attribute if it exists
+        name = link.get_text().strip()
+        if href and href.startswith(f"/{country}/city"):
+            city_url = f"https://www.ubereats.com{href}"
 
-    for shop in shops:
-        path = shop['href']
-        page_link = "https://www.ubereats.com" + path
-        names = shop.find_all('h3')
-        for name in names:
-            restaurant_name = name.text
-            with open("restaurants.txt", "a", encoding="utf-8") as file:
-                file.write(f"{restaurant_name}, {page_link}\n")
-                file.close()
+            with open(f"countries/{country}.txt", "a", encoding="utf-8") as file:
+                file.write(f"\n{name}:  {city_url}\n\nShops:\n\n")
+
+            city_response = requests.get(city_url, headers=headers, timeout=10)
+            city_soup = BeautifulSoup(city_response.content, "html.parser")
+            shops = city_soup.find_all('a', {"data-test": "store-link"})
+            for shop in shops:
+                path = shop.get('href')
+                page_link = "https://www.ubereats.com" + path
+                names = shop.find_all('h3')
+                for name in names:
+                    restaurant_name = name.get_text().strip()
+                    with open(f"countries/{country}.txt", "a", encoding="utf-8") as file:
+                        file.write(f"{restaurant_name}, {page_link}\n")

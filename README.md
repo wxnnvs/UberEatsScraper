@@ -13,7 +13,7 @@ Results can be found under the `countries` folder
 ## Installation (Docker)
 
 1. Install [Docker](https://www.docker.com/get-started/)
-2. Run `docker run --rm -it -v .:/app wxnnvs/ubereats-scraper` in a dedicated folder
+2. Run `docker run --rm -it -v .:/app/countries wxnnvs/ubereats-scraper` in a dedicated folder
 3. The program will deploy automaticly
 
-Results can be found under the `countries` folder
+Results can be found in the folder you ran the container in

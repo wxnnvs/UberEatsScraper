@@ -10,15 +10,21 @@ headers = {
 
 countries = ["au", "be", "ca", "cl", "cr", "do", "ec", "sv", "fr", "de", "gt", "ie", "jp", "ke", "mx", "nl", "nz", "pa", "pl", "pt", "za", "es", "lk", "se", "ch", "tw", "gb"]
 
-for country in countries:
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+# the actual stuff
+clear()
+for c in countries:
+    country = requests.get(f"https://restcountries.com/v3.1/alpha/{c}?fields=name", headers=headers, timeout=10).json()["name"]["common"]
     # Check if the 'countries' folder exists, create it if it doesn't
     if not os.path.exists('countries'):
         os.makedirs('countries')
-    with open(f"countries/{country}.txt", "w", encoding="utf-8") as file:
+    with open(f"countries/{c}.txt", "w", encoding="utf-8") as file:
         file.write(f"{country.upper()}\n\nCities:\n")
+    print(f"Scraping {country}...")
 
-    url = f"https://www.ubereats.com/{country}/location"
-    print(f"Scraping {country.upper()}...\n")
+    url = f"https://www.ubereats.com/{c}/location"
 
     try:
         response = requests.get(url, headers=headers, timeout=10)
@@ -33,10 +39,10 @@ for country in countries:
     for link in links:
         href = link.get('href')  # Get href attribute if it exists
         name = link.get_text().strip()
-        if href and href.startswith(f"/{country}/city"):
+        if href and href.startswith(f"/{c}/city"):
             city_url = f"https://www.ubereats.com{href}"
 
-            with open(f"countries/{country}.txt", "a", encoding="utf-8") as file:
+            with open(f"countries/{c}.txt", "a", encoding="utf-8") as file:
                 file.write(f"\n{name}:  {city_url}\n\nShops:\n\n")
 
             city_response = requests.get(city_url, headers=headers, timeout=10)
@@ -48,5 +54,5 @@ for country in countries:
                 names = shop.find_all('h3')
                 for name in names:
                     restaurant_name = name.get_text().strip()
-                    with open(f"countries/{country}.txt", "a", encoding="utf-8") as file:
+                    with open(f"countries/{c}.txt", "a", encoding="utf-8") as file:
                         file.write(f"{restaurant_name}, {page_link}\n")

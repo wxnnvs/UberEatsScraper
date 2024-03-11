@@ -1,7 +1,7 @@
 # UberEatsScraper
 Scrape a hell lot of  Uber Eats shops and their URL
 
-## Installation (local)
+## Installation (Manual)
 
 1. Install [Python 3](https://www.python.org/downloads/)
 2. Download the [latest release](github.com/wxnnvs/UberEatsScraper/releases/latest) to a dedicated folder

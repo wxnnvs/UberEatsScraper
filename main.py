@@ -1,17 +1,26 @@
 import requests
 from bs4 import BeautifulSoup
-from fp.fp import FreeProxy
+import json
 import os
+import signal
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
 }
-#proxy = FreeProxy(rand=True, timeout=1).get()
 
 countries = ["au", "be", "ca", "cl", "cr", "do", "ec", "sv", "fr", "de", "gt", "ie", "jp", "ke", "mx", "nl", "nz", "pa", "pl", "pt", "za", "es", "lk", "se", "ch", "tw", "gb"]
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
+
+def end(signal, frame):
+    print("Exiting...")
+    with open(f"countries/{c}.json", "w", encoding="utf-8") as file:
+        json.dump(data, file, indent=4)
+    exit(0)
+
+# Register the signal handler for Ctrl+C
+signal.signal(signal.SIGINT, end)
 
 # the actual stuff
 clear()
@@ -20,8 +29,12 @@ for c in countries:
     # Check if the 'countries' folder exists, create it if it doesn't
     if not os.path.exists('countries'):
         os.makedirs('countries')
-    with open(f"countries/{c}.txt", "w", encoding="utf-8") as file:
-        file.write(f"{country.upper()}\n\nCities:\n")
+    
+    data = {
+        "country": country.upper(),
+        "cities": []
+    }
+
     print(f"Scraping {country}...")
 
     url = f"https://www.ubereats.com/{c}/location"
@@ -41,9 +54,10 @@ for c in countries:
         name = link.get_text().strip()
         if href and href.startswith(f"/{c}/city"):
             city_url = f"https://www.ubereats.com{href}"
-
-            with open(f"countries/{c}.txt", "a", encoding="utf-8") as file:
-                file.write(f"\n{name}:  {city_url}\n\nShops:\n\n")
+            city_data = {
+                "city": name,
+                "shops": []
+            }
 
             city_response = requests.get(city_url, headers=headers, timeout=10)
             city_soup = BeautifulSoup(city_response.content, "html.parser")
@@ -54,5 +68,12 @@ for c in countries:
                 names = shop.find_all('h3')
                 for name in names:
                     restaurant_name = name.get_text().strip()
-                    with open(f"countries/{c}.txt", "a", encoding="utf-8") as file:
-                        file.write(f"{restaurant_name}, {page_link}\n")
+                    shop_data = {
+                        "name": restaurant_name,
+                        "link": page_link
+                    }
+                    city_data["shops"].append(shop_data)
+
+            data["cities"].append(city_data)
+
+    end()

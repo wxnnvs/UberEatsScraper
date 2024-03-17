@@ -1,5 +1,5 @@
-# UberEatsScraper
-Scrape a hell lot of  Uber Eats shops and their URL
+# Foodiecall
+Search through a lot of  Uber Eats shops and their URL
 
 ## Installation (Manual)
 
@@ -22,3 +22,11 @@ Results can be found under the `countries` folder
 3. The program will deploy automatically
 
 Results can be found in the folder you ran the container in
+
+## Contribute
+
+1. Install the dev requirements
+```
+pip install -r requirements-dev.txt
+pre-commit install
+```

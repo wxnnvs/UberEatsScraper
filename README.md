@@ -19,6 +19,6 @@ Results can be found under the `countries` folder
 
 1. Install [Docker](https://www.docker.com/get-started/)
 2. Run `docker run --rm -it -v .:/app/countries wxnnvs/ubereats-scraper` in a dedicated folder
-3. The program will deploy automaticly
+3. The program will deploy automatically
 
 Results can be found in the folder you ran the container in

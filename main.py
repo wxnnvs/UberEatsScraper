@@ -9,20 +9,51 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
 }
 
-countries = ["au", "be", "ca", "cl", "cr", "do", "ec", "sv", "fr", "de", "gt", "ie", "jp", "ke", "mx", "nl", "nz", "pa", "pl", "pt", "za", "es", "lk", "se", "ch", "tw", "gb"]
+countries = [
+    "au",
+    "be",
+    "ca",
+    "cl",
+    "cr",
+    "do",
+    "ec",
+    "sv",
+    "fr",
+    "de",
+    "gt",
+    "ie",
+    "jp",
+    "ke",
+    "mx",
+    "nl",
+    "nz",
+    "pa",
+    "pl",
+    "pt",
+    "za",
+    "es",
+    "lk",
+    "se",
+    "ch",
+    "tw",
+    "gb",
+]
+
 
 parser = argparse.ArgumentParser(description="Scrape Uber Eats data")
 parser.add_argument("-c", type=str, nargs='+', help="Scrape data from a specific country. \nIf not specified, all countries will be scraped.", metavar="<COUNTRYCODE>")
 args = parser.parse_args()
 
 def clear():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system("cls" if os.name == "nt" else "clear")
+
 
 def end(signal, frame):
     print("Exiting...")
     with open(f"countries/{c}.json", "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
     exit(0)
+
 
 # Register the signal handler for Ctrl+C
 signal.signal(signal.SIGINT, end)
@@ -80,10 +111,6 @@ if args.c == None:
                             "link": page_link
                         }
                         city_data["shops"].append(shop_data)
-
-                data["cities"].append(city_data)
-
-        end()
 else:
     for c in args.c:
         if c not in countries:

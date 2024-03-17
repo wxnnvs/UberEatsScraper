@@ -11,8 +11,8 @@ headers = {
 
 countries = ["au", "be", "ca", "cl", "cr", "do", "ec", "sv", "fr", "de", "gt", "ie", "jp", "ke", "mx", "nl", "nz", "pa", "pl", "pt", "za", "es", "lk", "se", "ch", "tw", "gb"]
 
-parser = argparse.ArgumentParser(description="Scrape data for a specific country.")
-parser.add_argument("--country", type=str, help="The country to scrape data for.")
+parser = argparse.ArgumentParser(description="Scrape Uber Eats data")
+parser.add_argument("-c", type=str, help="Scrape data from a specific country. \nIf not specified, all countries will be scraped.", metavar="<COUNTRYCODE>")
 args = parser.parse_args()
 
 def clear():
@@ -28,8 +28,8 @@ def end(signal, frame):
 signal.signal(signal.SIGINT, end)
 
 # the actual stuff
-clear()
-if args.country == None:
+if args.c == None:
+    clear()
     print("Scraping all countries...")
     for c in countries:
         country = requests.get(f"https://restcountries.com/v3.1/alpha/{c}?fields=name", headers=headers, timeout=10).json()["name"]["common"]
@@ -84,8 +84,9 @@ if args.country == None:
                 data["cities"].append(city_data)
 
         end()
-elif args.country in countries:
-    c = args.country
+elif args.c in countries:
+    clear()
+    c = args.c
     country = requests.get(f"https://restcountries.com/v3.1/alpha/{c}?fields=name", headers=headers, timeout=10).json()["name"]["common"]
     # Check if the 'countries' folder exists, create it if it doesn't
     if not os.path.exists('countries'):
@@ -138,3 +139,6 @@ elif args.country in countries:
             data["cities"].append(city_data)
 
     end()
+else:
+    print("Invalid country code.")
+    exit(1)

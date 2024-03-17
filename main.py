@@ -41,8 +41,15 @@ countries = [
 
 
 parser = argparse.ArgumentParser(description="Scrape Uber Eats data")
-parser.add_argument("-c", type=str, nargs='+', help="Scrape data from a specific country. \nIf not specified, all countries will be scraped.", metavar="<COUNTRYCODE>")
+parser.add_argument(
+    "-c",
+    type=str,
+    nargs="+",
+    help="Scrape data from a specific country. \nIf not specified, all countries will be scraped.",
+    metavar="<COUNTRYCODE>",
+)
 args = parser.parse_args()
+
 
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
@@ -59,19 +66,20 @@ def end(signal, frame):
 signal.signal(signal.SIGINT, end)
 
 # the actual stuff
-if args.c == None:
+if args.c is None:
     clear()
     print("Scraping all countries...")
     for c in countries:
-        country = requests.get(f"https://restcountries.com/v3.1/alpha/{c}?fields=name", headers=headers, timeout=10).json()["name"]["common"]
+        country = requests.get(
+            f"https://restcountries.com/v3.1/alpha/{c}?fields=name",
+            headers=headers,
+            timeout=10,
+        ).json()["name"]["common"]
         # Check if the 'countries' folder exists, create it if it doesn't
-        if not os.path.exists('countries'):
-            os.makedirs('countries')
-        
-        data = {
-            "country": country.upper(),
-            "cities": []
-        }
+        if not os.path.exists("countries"):
+            os.makedirs("countries")
+
+        data = {"country": country.upper(), "cities": []}
 
         print(f"Scraping {country}...")
 
@@ -79,37 +87,31 @@ if args.c == None:
 
         try:
             response = requests.get(url, headers=headers, timeout=10)
-            response.raise_for_status() 
+            response.raise_for_status()
         except requests.exceptions.RequestException as e:
             print("An error occurred:", e)
             exit(1)
 
         soup = BeautifulSoup(response.content, "html.parser")
 
-        links = soup.find_all('a')
+        links = soup.find_all("a")
         for link in links:
-            href = link.get('href')  # Get href attribute if it exists
+            href = link.get("href")  # Get href attribute if it exists
             name = link.get_text().strip()
             if href and href.startswith(f"/{c}/city"):
                 city_url = f"https://www.ubereats.com{href}"
-                city_data = {
-                    "city": name,
-                    "shops": []
-                }
+                city_data = {"city": name, "shops": []}
 
                 city_response = requests.get(city_url, headers=headers, timeout=10)
                 city_soup = BeautifulSoup(city_response.content, "html.parser")
-                shops = city_soup.find_all('a', {"data-test": "store-link"})
+                shops = city_soup.find_all("a", {"data-test": "store-link"})
                 for shop in shops:
-                    path = shop.get('href')
+                    path = shop.get("href")
                     page_link = "https://www.ubereats.com" + path
-                    names = shop.find_all('h3')
+                    names = shop.find_all("h3")
                     for name in names:
                         restaurant_name = name.get_text().strip()
-                        shop_data = {
-                            "name": restaurant_name,
-                            "link": page_link
-                        }
+                        shop_data = {"name": restaurant_name, "link": page_link}
                         city_data["shops"].append(shop_data)
 else:
     for c in args.c:
@@ -118,15 +120,16 @@ else:
             exit(1)
     for c in args.c:
         clear()
-        country = requests.get(f"https://restcountries.com/v3.1/alpha/{c}?fields=name", headers=headers, timeout=10).json()["name"]["common"]
+        country = requests.get(
+            f"https://restcountries.com/v3.1/alpha/{c}?fields=name",
+            headers=headers,
+            timeout=10,
+        ).json()["name"]["common"]
         # Check if the 'countries' folder exists, create it if it doesn't
-        if not os.path.exists('countries'):
-            os.makedirs('countries')
-        
-        data = {
-            "country": country.upper(),
-            "cities": []
-        }
+        if not os.path.exists("countries"):
+            os.makedirs("countries")
+
+        data = {"country": country.upper(), "cities": []}
 
         print(f"Scraping {country}...")
 
@@ -134,37 +137,31 @@ else:
 
         try:
             response = requests.get(url, headers=headers, timeout=10)
-            response.raise_for_status() 
+            response.raise_for_status()
         except requests.exceptions.RequestException as e:
             print("An error occurred:", e)
             exit(1)
 
         soup = BeautifulSoup(response.content, "html.parser")
 
-        links = soup.find_all('a')
+        links = soup.find_all("a")
         for link in links:
-            href = link.get('href')  # Get href attribute if it exists
+            href = link.get("href")  # Get href attribute if it exists
             name = link.get_text().strip()
             if href and href.startswith(f"/{c}/city"):
                 city_url = f"https://www.ubereats.com{href}"
-                city_data = {
-                    "city": name,
-                    "shops": []
-                }
+                city_data = {"city": name, "shops": []}
 
                 city_response = requests.get(city_url, headers=headers, timeout=10)
                 city_soup = BeautifulSoup(city_response.content, "html.parser")
-                shops = city_soup.find_all('a', {"data-test": "store-link"})
+                shops = city_soup.find_all("a", {"data-test": "store-link"})
                 for shop in shops:
-                    path = shop.get('href')
+                    path = shop.get("href")
                     page_link = "https://www.ubereats.com" + path
-                    names = shop.find_all('h3')
+                    names = shop.find_all("h3")
                     for name in names:
                         restaurant_name = name.get_text().strip()
-                        shop_data = {
-                            "name": restaurant_name,
-                            "link": page_link
-                        }
+                        shop_data = {"name": restaurant_name, "link": page_link}
                         city_data["shops"].append(shop_data)
 
                 data["cities"].append(city_data)

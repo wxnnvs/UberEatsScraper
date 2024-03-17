@@ -6,8 +6,6 @@ services:
     image: "mongo:7"
     hostname: "mongodb"
     restart: "no"
-    ports:
-      - 27019:27017
     volumes:
       - mongodb_data:/data/db
 

@@ -12,7 +12,7 @@ headers = {
 countries = ["au", "be", "ca", "cl", "cr", "do", "ec", "sv", "fr", "de", "gt", "ie", "jp", "ke", "mx", "nl", "nz", "pa", "pl", "pt", "za", "es", "lk", "se", "ch", "tw", "gb"]
 
 parser = argparse.ArgumentParser(description="Scrape Uber Eats data")
-parser.add_argument("-c", type=str, nargs='+', help="Scrape data from a specific country. \nIf not specified, all countries will be scraped.", metavar="<COUNTRYCODE>")
+parser.add_argument("--country", "-c", type=str, nargs='+', help="Scrape data from a specific country. \nIf not specified, all countries will be scraped.", metavar="<COUNTRYCODE>")
 args = parser.parse_args()
 
 def clear():

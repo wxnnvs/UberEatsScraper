@@ -1,0 +1,5 @@
+/venv
+
+# Docker-compose override files
+docker-compose.override*.yml
+

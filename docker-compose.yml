@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+
+  mongodb:
+    image: "mongo:7"
+    hostname: "mongodb"
+    restart: "no"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
